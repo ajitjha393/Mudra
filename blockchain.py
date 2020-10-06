@@ -27,6 +27,15 @@ def get_menu_input():
     return int(input('Enter a choice : '))
 
 
+def verify_chain_integrity():
+
+    for block_index in range(1, len(blockchain)):
+        if blockchain[block_index][0] != blockchain[block_index - 1]:
+            return False
+
+    return True
+
+
 def main():
 
     while True:
@@ -47,6 +56,9 @@ def main():
             break
         else:
             print('Invalid Input!')
+        if not verify_chain_integrity():
+            print('Block chain has been compromised .... x x x x ')
+            break
 
     print('Done :) ')
     return 0
