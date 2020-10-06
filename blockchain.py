@@ -22,7 +22,8 @@ def get_transaction_amount():
 def get_menu_input():
     print('1. Add block to Blockchain ')
     print('2. Display the Blockchain')
-    print('3. Exit the Loop ')
+    print('3. Manipulate the block ')
+    print('4. Exit the Loop ')
     return int(input('Enter a choice : '))
 
 
@@ -39,6 +40,10 @@ def main():
         elif choice == 2:
             display_blockchain()
         elif choice == 3:
+            if len(blockchain) >= 1:
+                blockchain[0] = ['Manipulated Data']
+
+        elif choice == 4:
             break
         else:
             print('Invalid Input!')
