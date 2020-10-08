@@ -9,14 +9,34 @@ def get_last_blockchain_value():
     return blockchain[-1]
 
 
-def add_value(transaction_amount, last_transaction):
-    if get_last_blockchain_value() == None:
-        last_transaction = [0.0]
-    blockchain.append([last_transaction, transaction_amount])
+def add_value(sender, recipient, amount=1.0):
+    ''' 
+        Add new transaction to the open transaction list
+
+        Arguments:
+
+        :sender -> str | Info about sender of coins \n
+        :recipient -> str | Info about recipient of coins \n
+        :amount -> float | Transaction amount
+
+    '''
+    new_transaction = {
+        'sender': sender,
+        'recipient': recipient,
+        'amount': amount
+    }
+
+    open_transactions.append(new_transaction)
 
 
-def get_transaction_amount():
-    return float(input('Enter your transaction amount: '))
+def mine_block():
+    pass
+
+
+def get_transaction_input():
+    tx_recipient = input('Enter the Recipient of the Transacation: ')
+    tx_amount = float(input('Enter your transaction amount: '))
+    return (tx_recipient, tx_amount)
 
 
 def get_menu_input():
@@ -43,7 +63,7 @@ def main():
         if choice == 1:
             add_value(
                 last_transaction=get_last_blockchain_value(),
-                transaction_amount=get_transaction_amount()
+                transaction_amount=get_transaction_input()
             )
 
         elif choice == 2:
@@ -65,4 +85,6 @@ def main():
 
 
 blockchain = []
+open_transactions = []
+tx_owner = 'Bisu Baby'
 main()
