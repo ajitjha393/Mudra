@@ -1,3 +1,8 @@
+blockchain = []
+open_transactions = []
+tx_owner = 'Bisu Baby'
+
+
 def display_blockchain():
     for block in blockchain:
         print(block)
@@ -9,7 +14,7 @@ def get_last_blockchain_value():
     return blockchain[-1]
 
 
-def add_value(sender, recipient, amount=1.0):
+def add_transaction(recipient, sender=tx_owner, amount=1.0):
     ''' 
         Add new transaction to the open transaction list
 
@@ -61,10 +66,9 @@ def main():
     while True:
         choice = get_menu_input()
         if choice == 1:
-            add_value(
-                last_transaction=get_last_blockchain_value(),
-                transaction_amount=get_transaction_input()
-            )
+            tx_recipient, tx_amount = get_transaction_input()
+            add_transaction(recipient=tx_recipient, amount=tx_amount)
+            print(open_transactions)
 
         elif choice == 2:
             display_blockchain()
@@ -84,7 +88,4 @@ def main():
     return 0
 
 
-blockchain = []
-open_transactions = []
-tx_owner = 'Bisu Baby'
 main()
