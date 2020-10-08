@@ -43,13 +43,19 @@ def add_transaction(recipient, sender=tx_owner, amount=1.0):
 def mine_block():
     last_block = blockchain[-1]
     # Will change hash later
+    hashed_block = ''
+    for key in last_block:
+        value = last_block[key]
+        hashed_block += str(value)
+
     block = {
-        'previous_hash': 'XYZ',
+        'previous_hash': hashed_block,
         'index': len(blockchain),
         'transactions': open_transactions
     }
 
     blockchain.append(block)
+    print(blockchain)
 
 
 def get_transaction_input():
@@ -60,9 +66,10 @@ def get_transaction_input():
 
 def get_menu_input():
     print('1. Add block to Blockchain ')
-    print('2. Display the Blockchain')
-    print('3. Manipulate the block ')
-    print('4. Exit the Loop ')
+    print('2. Mine a new block ')
+    print('3. Display the Blockchain')
+    print('4. Manipulate the block ')
+    print('5. Exit the Loop ')
     return int(input('Enter a choice : '))
 
 
@@ -85,18 +92,20 @@ def main():
             print(open_transactions)
 
         elif choice == 2:
-            display_blockchain()
+            mine_block()
         elif choice == 3:
+            display_blockchain()
+        elif choice == 4:
             if len(blockchain) >= 1:
                 blockchain[0] = ['Manipulated Data']
 
-        elif choice == 4:
+        elif choice == 5:
             break
         else:
             print('Invalid Input!')
-        if not verify_chain_integrity():
-            print('Block chain has been compromised .... x x x x ')
-            break
+        # if not verify_chain_integrity():
+        #     print('Block chain has been compromised .... x x x x ')
+        #     break
 
     print('Done :) ')
     return 0
