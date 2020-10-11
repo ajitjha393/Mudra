@@ -29,6 +29,13 @@ def get_balance(participant):
         for block in blockchain
     ]
 
+    open_tx_sender = [
+        tx['amount']
+        for tx in open_transactions if tx['sender'] == participant
+    ]
+
+    tx_sender.append(open_tx_sender)
+
     amount_sent = 0
     for tx in tx_sender:
         for amount in tx:
@@ -48,6 +55,11 @@ def get_balance(participant):
             amount_recieved += amount
 
     return amount_recieved - amount_sent
+
+
+def verify_transaction(transaction):
+    sender_balance = get_balance(transaction['sender'])
+    return sender_balance >= transaction['amount']
 
 
 def display_blockchain():
@@ -82,9 +94,12 @@ def add_transaction(recipient, sender=tx_owner, amount=1.0):
         'amount': amount
     }
 
-    open_transactions.append(new_transaction)
-    participants.add(sender)
-    participants.add(recipient)
+    if verify_transaction(new_transaction):
+        open_transactions.append(new_transaction)
+        participants.add(sender)
+        participants.add(recipient)
+        return True
+    return False
 
 
 def mine_block():
@@ -146,8 +161,10 @@ def main():
         choice = get_menu_input()
         if choice == 1:
             tx_recipient, tx_amount = get_transaction_input()
-            add_transaction(recipient=tx_recipient, amount=tx_amount)
-            print(open_transactions)
+            if add_transaction(recipient=tx_recipient, amount=tx_amount):
+                print('Added Transaction')
+            else:
+                print('Transaction Failed!')
 
         elif choice == 2:
             if mine_block():
@@ -171,7 +188,7 @@ def main():
         if not verify_chain_integrity():
             print('Block chain has been compromised .... x x x x ')
             break
-        print(get_balance(tx_owner))
+        print('Balance' + str(get_balance(tx_owner)))
 
     print('Done :) ')
     return 0
