@@ -55,7 +55,6 @@ def mine_block():
     }
 
     blockchain.append(block)
-    print(blockchain)
 
 
 def get_transaction_input():
@@ -103,15 +102,19 @@ def main():
             display_blockchain()
         elif choice == 4:
             if len(blockchain) >= 1:
-                blockchain[0] = ['Manipulated Data']
+                blockchain[0] = {
+                    'previous_hash': '',
+                    'index': 0,
+                    'transactions': [{'sender': 'PnB', 'recipient': 'Nirav Modi', 'amount': 11}]
+                }
 
         elif choice == 5:
             break
         else:
             print('Invalid Input!')
-        # if not verify_chain_integrity():
-        #     print('Block chain has been compromised .... x x x x ')
-        #     break
+        if not verify_chain_integrity():
+            print('Block chain has been compromised .... x x x x ')
+            break
 
     print('Done :) ')
     return 0
