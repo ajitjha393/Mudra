@@ -16,6 +16,38 @@ def hash_block(block):
     return '-'.join([str(block[key]) for key in block])
 
 
+def get_balance(participant):
+    # tx_sender stores amount from transactions where sender => participant
+
+    tx_sender = [
+        [
+            tx['amount']
+            for tx in block['transactions'] if tx['sender'] == participant
+        ]
+        for block in blockchain
+    ]
+
+    amount_sent = 0
+    for tx in tx_sender:
+        for amount in tx:
+            amount_sent += amount
+
+    tx_recipient = [
+        [
+            tx['amount']
+            for tx in block['transactions'] if tx['recipient'] == participant
+        ]
+        for block in blockchain
+    ]
+
+    amount_recieved = 0
+    for tx in tx_recipient:
+        for amount in tx:
+            amount_recieved += amount
+
+    return amount_recieved - amount_sent
+
+
 def display_blockchain():
     for block in blockchain:
         print(block)
@@ -130,9 +162,9 @@ def main():
         if not verify_chain_integrity():
             print('Block chain has been compromised .... x x x x ')
             break
+        print(get_balance(tx_owner))
 
     print('Done :) ')
-    print(open_transactions)
     return 0
 
 
