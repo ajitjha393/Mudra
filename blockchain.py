@@ -1,3 +1,5 @@
+# Global Variables and DS used in our Project
+
 genesis_block = {
     'previous_hash': '',
     'index': 0,
@@ -7,6 +9,7 @@ genesis_block = {
 blockchain = [genesis_block]
 open_transactions = []
 tx_owner = 'Bisu Baby'
+participants = {tx_owner}
 
 
 def hash_block(block):
@@ -16,6 +19,10 @@ def hash_block(block):
 def display_blockchain():
     for block in blockchain:
         print(block)
+
+
+def display_participants():
+    print(participants)
 
 
 def get_last_blockchain_value():
@@ -42,6 +49,8 @@ def add_transaction(recipient, sender=tx_owner, amount=1.0):
     }
 
     open_transactions.append(new_transaction)
+    participants.add(sender)
+    participants.add(recipient)
 
 
 def mine_block():
@@ -68,7 +77,8 @@ def get_menu_input():
     print('2. Mine a new block ')
     print('3. Display the Blockchain')
     print('4. Manipulate the block ')
-    print('5. Exit the Loop ')
+    print('5. Display the Participants')
+    print('6. Exit the Loop ')
     return int(input('Enter a choice : '))
 
 
@@ -109,6 +119,8 @@ def main():
                 }
 
         elif choice == 5:
+            display_participants()
+        elif choice == 6:
             break
         else:
             print('Invalid Input!')
