@@ -43,10 +43,7 @@ def add_transaction(recipient, sender=tx_owner, amount=1.0):
 def mine_block():
     last_block = blockchain[-1]
     # Will change hash later
-    hashed_block = ''
-    for key in last_block:
-        value = last_block[key]
-        hashed_block += str(value)
+    hashed_block = '-'.join([str(last_block[key]) for key in last_block])
 
     block = {
         'previous_hash': hashed_block,
