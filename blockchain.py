@@ -64,6 +64,7 @@ def mine_block():
     }
 
     blockchain.append(block)
+    return True
 
 
 def get_transaction_input():
@@ -100,6 +101,7 @@ def verify_chain_integrity():
 def main():
 
     while True:
+        global open_transactions
         choice = get_menu_input()
         if choice == 1:
             tx_recipient, tx_amount = get_transaction_input()
@@ -107,7 +109,8 @@ def main():
             print(open_transactions)
 
         elif choice == 2:
-            mine_block()
+            if mine_block():
+                open_transactions = []
         elif choice == 3:
             display_blockchain()
         elif choice == 4:
@@ -129,6 +132,7 @@ def main():
             break
 
     print('Done :) ')
+    print(open_transactions)
     return 0
 
 
