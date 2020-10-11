@@ -9,6 +9,10 @@ open_transactions = []
 tx_owner = 'Bisu Baby'
 
 
+def hash_block(block):
+    return '-'.join([str(block[key]) for key in block])
+
+
 def display_blockchain():
     for block in blockchain:
         print(block)
@@ -43,8 +47,7 @@ def add_transaction(recipient, sender=tx_owner, amount=1.0):
 def mine_block():
     last_block = blockchain[-1]
     # Will change hash later
-    hashed_block = '-'.join([str(last_block[key]) for key in last_block])
-
+    hashed_block = hash_block(last_block)
     block = {
         'previous_hash': hashed_block,
         'index': len(blockchain),
@@ -71,9 +74,15 @@ def get_menu_input():
 
 
 def verify_chain_integrity():
+    '''
+    Verify the hash value of each block and verifies it Integrity
 
-    for block_index in range(1, len(blockchain)):
-        if blockchain[block_index][0] != blockchain[block_index - 1]:
+    @return -> Boolean
+    '''
+    for (index, block) in enumerate(blockchain):
+        if index == 0:
+            continue
+        if block['previous_hash'] != hash_block(blockchain[index - 1]):
             return False
 
     return True
