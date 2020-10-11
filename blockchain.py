@@ -1,5 +1,7 @@
 # Global Variables and DS used in our Project
 
+MINING_REWARD = 10.0
+
 genesis_block = {
     'previous_hash': '',
     'index': 0,
@@ -89,6 +91,13 @@ def mine_block():
     last_block = blockchain[-1]
     # Will change hash later
     hashed_block = hash_block(last_block)
+    reward_tx = {
+        'sender': 'MINING',
+        'recipient': tx_owner,
+        'amount': MINING_REWARD
+    }
+
+    open_transactions.append(reward_tx)
     block = {
         'previous_hash': hashed_block,
         'index': len(blockchain),
