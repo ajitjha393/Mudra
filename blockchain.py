@@ -51,13 +51,10 @@ def get_balance(participant):
         for block in blockchain
     ]
 
-    amount_recieved = 0
-    for tx in tx_recipient:
-        amount_recieved += reduce(
-            lambda tx_sum, tx_amount: tx_sum + tx_amount,
-            tx,
-            amount_recieved)
-
+    amount_recieved = reduce(
+        lambda tx_sum, tx_amount_xs: tx_sum + sum(tx_amount_xs),
+        tx_recipient,
+        0)
     return amount_recieved - amount_sent
 
 
