@@ -38,12 +38,10 @@ def get_balance(participant):
 
     tx_sender.append(open_tx_sender)
 
-    amount_sent = 0
-    for tx in tx_sender:
-        amount_sent += reduce(
-            lambda tx_sum, tx_amount: tx_sum + tx_amount,
-            tx,
-            amount_sent)
+    amount_sent = reduce(
+        lambda tx_sum, tx_amount_xs: tx_sum + sum(tx_amount_xs),
+        tx_sender,
+        0)
 
     tx_recipient = [
         [
