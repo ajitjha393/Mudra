@@ -156,6 +156,18 @@ def verify_chain_integrity():
     return True
 
 
+# A standalone utility fn for verifying open_transactions
+def verify_transactions():
+
+    # one liner using any / all
+    return all([verify_transaction(tx) for tx in open_transactions])
+
+    # for tx in open_transactions:
+    #     if not verify_transaction(tx):
+    #         return False
+    # return True
+
+
 def main():
 
     while True:
