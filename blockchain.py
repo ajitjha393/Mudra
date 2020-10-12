@@ -209,7 +209,7 @@ def main():
         if not verify_chain_integrity():
             print('Block chain has been compromised .... x x x x ')
             break
-        print('Balance' + str(get_balance(tx_owner)))
+        print(f'Balance = {get_balance(tx_owner):.2f}')
 
     print('Done :) ')
     return 0
