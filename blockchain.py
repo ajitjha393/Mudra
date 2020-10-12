@@ -1,5 +1,7 @@
 # Global Variables and DS used in our Project
 
+from functools import reduce
+
 MINING_REWARD = 10.0
 
 genesis_block = {
@@ -38,8 +40,10 @@ def get_balance(participant):
 
     amount_sent = 0
     for tx in tx_sender:
-        for amount in tx:
-            amount_sent += amount
+        amount_sent += reduce(
+            lambda tx_sum, tx_amount: tx_sum + tx_amount,
+            tx,
+            amount_sent)
 
     tx_recipient = [
         [
@@ -51,8 +55,10 @@ def get_balance(participant):
 
     amount_recieved = 0
     for tx in tx_recipient:
-        for amount in tx:
-            amount_recieved += amount
+        amount_recieved += reduce(
+            lambda tx_sum, tx_amount: tx_sum + tx_amount,
+            tx,
+            amount_recieved)
 
     return amount_recieved - amount_sent
 
