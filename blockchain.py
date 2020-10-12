@@ -137,7 +137,8 @@ def get_menu_input():
     print('3. Display the Blockchain')
     print('4. Manipulate the block ')
     print('5. Display the Participants')
-    print('6. Exit the Loop ')
+    print('6. Check for validity of Transactions')
+    print('7. Exit the Loop ')
     return int(input('Enter a choice : '))
 
 
@@ -195,7 +196,13 @@ def main():
 
         elif choice == 5:
             display_participants()
+
         elif choice == 6:
+            if verify_transactions():
+                print('All transactions are valid!')
+            else:
+                print('Invalid Tx present!')
+        elif choice == 7:
             break
         else:
             print('Invalid Input!')
