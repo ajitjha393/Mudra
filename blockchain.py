@@ -1,6 +1,8 @@
 # Global Variables and DS used in our Project
 
 from functools import reduce
+import hashlib
+import json
 
 MINING_REWARD = 10.0
 
@@ -17,7 +19,10 @@ participants = {tx_owner}
 
 
 def hash_block(block):
-    return '-'.join([str(block[key]) for key in block])
+    '''
+    Hashing of block using sha256 algorithm
+    '''
+    return hashlib.sha256(json.dumps(block).encode()).hexdigest()
 
 
 def get_balance(participant):
