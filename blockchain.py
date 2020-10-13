@@ -3,6 +3,7 @@
 from functools import reduce
 import hashlib
 import json
+from collections import OrderedDict
 
 MINING_REWARD = 10.0
 
@@ -23,7 +24,7 @@ def hash_block(block):
     '''
     Hashing of block using sha256 algorithm
     '''
-    return hashlib.sha256(json.dumps(block).encode()).hexdigest()
+    return hashlib.sha256(json.dumps(block, sort_keys=True).encode()).hexdigest()
 
 
 def valid_proof(transactions, last_hash, proof):
@@ -111,11 +112,17 @@ def add_transaction(recipient, sender=tx_owner, amount=1.0):
         :amount -> float | Transaction amount
 
     '''
-    new_transaction = {
-        'sender': sender,
-        'recipient': recipient,
-        'amount': amount
-    }
+    # new_transaction = {
+    #     'sender': sender,
+    #     'recipient': recipient,
+    #     'amount': amount
+    # }
+
+    new_transaction = OrderedDict([
+        ('sender', sender),
+        ('recipient', recipient),
+        ('amount', amount)]
+    )
 
     if verify_transaction(new_transaction):
         open_transactions.append(new_transaction)
@@ -130,11 +137,17 @@ def mine_block():
     # Will change hash later
     hashed_block = hash_block(last_block)
     proof = proof_of_work()
-    reward_tx = {
-        'sender': 'MINING',
-        'recipient': tx_owner,
-        'amount': MINING_REWARD
-    }
+    # reward_tx = {
+    #     'sender': 'MINING',
+    #     'recipient': tx_owner,
+    #     'amount': MINING_REWARD
+    # }
+
+    reward_tx = OrderedDict([
+        ('sender', 'MINING'),
+        ('recipient', tx_owner),
+        ('amount', MINING_REWARD)
+    ])
 
     copied_open_transactions = open_transactions[:]
 
