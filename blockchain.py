@@ -25,6 +25,23 @@ def hash_block(block):
     return hashlib.sha256(json.dumps(block).encode()).hexdigest()
 
 
+def valid_proof(transactions, last_hash, proof):
+    guess = (str(transactions) + str(last_hash) + str(proof)).encode()
+    guess_hash = hashlib.sha256(guess).hexdigest()
+    print(guess_hash)
+    return guess_hash[0:2] == '00'
+
+
+def proof_of_work():
+    last_block = blockchain[-1]
+    last_hash = hash_block(last_block)
+    Nonce = 0
+    while not valid_proof(last_block, last_hash, Nonce):
+        Nonce += 1
+    return Nonce
+
+
+
 def get_balance(participant):
     # tx_sender stores amount from transactions where sender => participant
 
