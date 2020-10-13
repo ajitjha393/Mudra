@@ -9,7 +9,8 @@ MINING_REWARD = 10.0
 genesis_block = {
     'previous_hash': '',
     'index': 0,
-    'transactions': []
+    'transactions': [],
+    'proof': 100
 }
 
 blockchain = [genesis_block]
@@ -28,7 +29,7 @@ def hash_block(block):
 def valid_proof(transactions, last_hash, proof):
     guess = (str(transactions) + str(last_hash) + str(proof)).encode()
     guess_hash = hashlib.sha256(guess).hexdigest()
-    print(guess_hash)
+    # print(guess_hash)
     return guess_hash[0:2] == '00'
 
 
@@ -36,10 +37,9 @@ def proof_of_work():
     last_block = blockchain[-1]
     last_hash = hash_block(last_block)
     Nonce = 0
-    while not valid_proof(last_block, last_hash, Nonce):
+    while not valid_proof(open_transactions, last_hash, Nonce):
         Nonce += 1
     return Nonce
-
 
 
 def get_balance(participant):
@@ -129,6 +129,7 @@ def mine_block():
     last_block = blockchain[-1]
     # Will change hash later
     hashed_block = hash_block(last_block)
+    proof = proof_of_work()
     reward_tx = {
         'sender': 'MINING',
         'recipient': tx_owner,
@@ -141,7 +142,8 @@ def mine_block():
     block = {
         'previous_hash': hashed_block,
         'index': len(blockchain),
-        'transactions': copied_open_transactions
+        'transactions': copied_open_transactions,
+        'proof': proof
     }
 
     blockchain.append(block)
@@ -155,7 +157,7 @@ def get_transaction_input():
 
 
 def get_menu_input():
-    print('1. Add block to Blockchain ')
+    print('1. Add a new transaction ')
     print('2. Mine a new block ')
     print('3. Display the Blockchain')
     print('4. Manipulate the block ')
@@ -175,6 +177,9 @@ def verify_chain_integrity():
         if index == 0:
             continue
         if block['previous_hash'] != hash_block(blockchain[index - 1]):
+            return False
+        if not valid_proof(block['transactions'][:-1], block['previous_hash'], block['proof']):
+            print('Invalid Proof of work')
             return False
 
     return True
