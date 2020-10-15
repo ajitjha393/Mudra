@@ -24,45 +24,55 @@ participants = {tx_owner}
 
 
 def load_data():
-    with open('blockchain.txt', mode='r') as f:
-        global blockchain
-        global open_transactions
-        file_content = f.readlines()
-        blockchain = json.loads(file_content[0][:-1])
-        updated_blockchain = []
+    try:
+        with open('blockchain.txt', mode='r') as f:
+            global blockchain
+            global open_transactions
+            file_content = f.readlines()
+            blockchain = json.loads(file_content[0][:-1])
+            updated_blockchain = []
 
-        for block in blockchain:
-            updated_block = {
-                'previous_hash': block['previous_hash'],
-                'index': block['index'],
-                'transactions': [
-                    OrderedDict(
-                        [
-                            ('sender', tx['sender']),
-                            ('recipient', tx['recipient']),
-                            ('amount', tx['amount'])
-                        ]
-                    ) for tx in block['transactions']
-                ],
-                'proof': block['proof']
-            }
+            for block in blockchain:
+                updated_block = {
+                    'previous_hash': block['previous_hash'],
+                    'index': block['index'],
+                    'transactions': [
+                        OrderedDict(
+                            [
+                                ('sender', tx['sender']),
+                                ('recipient', tx['recipient']),
+                                ('amount', tx['amount'])
+                            ]
+                        ) for tx in block['transactions']
+                    ],
+                    'proof': block['proof']
+                }
 
-            updated_blockchain.append(updated_block)
+                updated_blockchain.append(updated_block)
 
-        blockchain = updated_blockchain
+            blockchain = updated_blockchain
 
-        open_transactions = json.loads(file_content[1])
-        updated_open_transactions = [
-            OrderedDict(
-                [
-                    ('sender', tx['sender']),
-                    ('recipient', tx['recipient']),
-                    ('amount', tx['amount'])
-                ]
-            ) for tx in open_transactions
-        ]
+            open_transactions = json.loads(file_content[1])
+            updated_open_transactions = [
+                OrderedDict(
+                    [
+                        ('sender', tx['sender']),
+                        ('recipient', tx['recipient']),
+                        ('amount', tx['amount'])
+                    ]
+                ) for tx in open_transactions
+            ]
 
-        open_transactions = updated_open_transactions
+            open_transactions = updated_open_transactions
+
+    except FileNotFoundError:
+        print('File does not exist...')
+
+    except:
+        print('Very Generalized error code...')
+    finally:
+        print('cleanup work...')    
+
 
 
 load_data()
