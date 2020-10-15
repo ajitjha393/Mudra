@@ -10,24 +10,18 @@ from hash_util import hash_string_256, hash_block
 
 MINING_REWARD = 10.0
 
-genesis_block = {
-    'previous_hash': '',
-    'index': 0,
-    'transactions': [],
-    'proof': 100
-}
-
-blockchain = [genesis_block]
+blockchain = []
 open_transactions = []
 tx_owner = 'Bisu Baby'
 participants = {tx_owner}
 
 
 def load_data():
+    global blockchain
+    global open_transactions
+
     try:
         with open('blockchain.txt', mode='r') as f:
-            global blockchain
-            global open_transactions
             file_content = f.readlines()
             blockchain = json.loads(file_content[0][:-1])
             updated_blockchain = []
@@ -65,25 +59,37 @@ def load_data():
 
             open_transactions = updated_open_transactions
 
-    except FileNotFoundError:
+    except IOError:
         print('File does not exist...')
 
-    except:
-        print('Very Generalized error code...')
-    finally:
-        print('cleanup work...')    
+        genesis_block = {
+            'previous_hash': '',
+            'index': 0,
+            'transactions': [],
+            'proof': 100
+        }
+        blockchain = [genesis_block]
+        open_transactions = []
 
+    finally:
+        print('cleanup work...')
 
 
 load_data()
 
 
 def save_data():
-    with open('blockchain.txt', mode='w') as f:
-        f.write(json.dumps(blockchain))
-        f.write('\n')
-        f.write(json.dumps(open_transactions))
-    return True
+    try:
+
+        with open('blockchain.txt', mode='w') as f:
+            f.write(json.dumps(blockchain))
+            f.write('\n')
+            f.write(json.dumps(open_transactions))
+        return True
+
+    except IOError:
+        print('Saving Failed!')
+        return False
 
 
 def valid_proof(transactions, last_hash, proof):
