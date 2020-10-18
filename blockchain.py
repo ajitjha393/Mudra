@@ -35,7 +35,7 @@ def load_data():
                             ('recipient', tx['recipient']),
                             ('amount', tx['amount'])
                         ]
-                    ) for tx in block.transactions
+                    ) for tx in block['transactions']
                 ]
 
                 updated_block = Block(
