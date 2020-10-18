@@ -6,6 +6,7 @@ import hashlib
 import json
 
 from hash_util import hash_string_256, hash_block
+from block import Block
 
 
 MINING_REWARD = 10.0
@@ -27,20 +28,22 @@ def load_data():
             updated_blockchain = []
 
             for block in blockchain:
-                updated_block = {
-                    'previous_hash': block['previous_hash'],
-                    'index': block['index'],
-                    'transactions': [
-                        OrderedDict(
-                            [
-                                ('sender', tx['sender']),
-                                ('recipient', tx['recipient']),
-                                ('amount', tx['amount'])
-                            ]
-                        ) for tx in block['transactions']
-                    ],
-                    'proof': block['proof']
-                }
+                converted_tx = [
+                    OrderedDict(
+                        [
+                            ('sender', tx['sender']),
+                            ('recipient', tx['recipient']),
+                            ('amount', tx['amount'])
+                        ]
+                    ) for tx in block.transactions
+                ]
+
+                updated_block = Block(
+                    block['index'],
+                    block['previous_hash'],
+                    converted_tx, block['proof'],
+                    block['timestamp']
+                )
 
                 updated_blockchain.append(updated_block)
 
@@ -62,12 +65,8 @@ def load_data():
     except IOError:
         print('File does not exist...')
 
-        genesis_block = {
-            'previous_hash': '',
-            'index': 0,
-            'transactions': [],
-            'proof': 100
-        }
+        genesis_block = Block(0, '', [], 100, 0)
+
         blockchain = [genesis_block]
         open_transactions = []
 
@@ -114,7 +113,7 @@ def get_balance(participant):
     tx_sender = [
         [
             tx['amount']
-            for tx in block['transactions'] if tx['sender'] == participant
+            for tx in block.transactions if tx['sender'] == participant
         ]
         for block in blockchain
     ]
@@ -134,7 +133,7 @@ def get_balance(participant):
     tx_recipient = [
         [
             tx['amount']
-            for tx in block['transactions'] if tx['recipient'] == participant
+            for tx in block.transactions if tx['recipient'] == participant
         ]
         for block in blockchain
     ]
@@ -213,12 +212,13 @@ def mine_block():
     copied_open_transactions = open_transactions[:]
 
     copied_open_transactions.append(reward_tx)
-    block = {
-        'previous_hash': hashed_block,
-        'index': len(blockchain),
-        'transactions': copied_open_transactions,
-        'proof': proof
-    }
+
+    block = Block(
+        len(blockchain),
+        hashed_block,
+        copied_open_transactions,
+        proof
+    )
 
     blockchain.append(block)
     return True
@@ -234,7 +234,6 @@ def get_menu_input():
     print('1. Add a new transaction ')
     print('2. Mine a new block ')
     print('3. Display the Blockchain')
-    print('4. Manipulate the block ')
     print('5. Display the Participants')
     print('6. Check for validity of Transactions')
     print('7. Exit the Loop ')
@@ -250,9 +249,9 @@ def verify_chain_integrity():
     for (index, block) in enumerate(blockchain):
         if index == 0:
             continue
-        if block['previous_hash'] != hash_block(blockchain[index - 1]):
+        if block.previous_hash != hash_block(blockchain[index - 1]):
             return False
-        if not valid_proof(block['transactions'][:-1], block['previous_hash'], block['proof']):
+        if not valid_proof(block.transactions[:-1], block.previous_hash, block.proof):
             print('Invalid Proof of work')
             return False
 
@@ -289,13 +288,6 @@ def main():
                 save_data()
         elif choice == 3:
             display_blockchain()
-        elif choice == 4:
-            if len(blockchain) >= 1:
-                blockchain[0] = {
-                    'previous_hash': '',
-                    'index': 0,
-                    'transactions': [{'sender': 'PnB', 'recipient': 'Nirav Modi', 'amount': 11}]
-                }
 
         elif choice == 5:
             display_participants()

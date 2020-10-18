@@ -7,4 +7,4 @@ class Block:
         self.previous_hash = previous_hash
         self.transactions = transactions
         self.proof = proof
-        self.timezone = time
+        self.timestamp = time
