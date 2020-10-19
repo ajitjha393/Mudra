@@ -5,7 +5,9 @@ from verification import Verification
 
 class Node:
     def __init__(self):
-        self.id = str(uuid4())
+        # self.id = str(uuid4())
+        # Will add public wallet key later
+        self.id = 'Bisu_baby'
         self.blockchain = Blockchain(self.id)
 
     def get_transaction_input(self):
