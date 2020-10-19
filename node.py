@@ -1,7 +1,12 @@
-class Node:
+from blockchain import Blockchain
+from uuid import uuid4
+from verification import Verification
 
+
+class Node:
     def __init__(self):
-        self.blockchain = []
+        self.id = str(uuid4())
+        self.blockchain = Blockchain(self.id)
 
     def get_transaction_input(self):
         tx_recipient = input('Enter the Recipient of the Transacation: ')
@@ -17,30 +22,27 @@ class Node:
         return int(input('Enter a choice : '))
 
     def display_blockchain(self):
-        for block in self.blockchain:
+        for block in self.blockchain.chain:
             print('Outputting Block -> ')
             print(block)
 
     def listen_for_input(self):
         while True:
-            global open_transactions
             choice = self.get_menu_input()
             if choice == 1:
                 tx_recipient, tx_amount = self.get_transaction_input()
-                if add_transaction(recipient=tx_recipient, amount=tx_amount):
+                if self.blockchain.add_transaction(recipient=tx_recipient, sender=self.id, amount=tx_amount):
                     print('Added Transaction')
                 else:
                     print('Transaction Failed!')
 
             elif choice == 2:
-                if mine_block():
-                    open_transactions = []
-                    save_data()
+                self.blockchain.mine_block()
             elif choice == 3:
                 self.display_blockchain()
 
             elif choice == 4:
-                if Verification().verify_transactions(open_transactions, get_balance):
+                if Verification().verify_transactions(self.blockchain.open_transactions, self.blockchain.get_balance):
                     print('All transactions are valid!')
                 else:
                     print('Invalid Tx present!')
@@ -48,10 +50,15 @@ class Node:
                 break
             else:
                 print('Invalid Input!')
-            if not Verification().verify_chain_integrity(blockchain):
+            if not Verification().verify_chain_integrity(self.blockchain.chain):
                 print('Block chain has been compromised .... x x x x ')
                 break
-            print(f'Balance of {tx_owner} = {get_balance(tx_owner):.2f}')
+            print(
+                f'Balance of {self.id} = {self.blockchain.get_balance():.2f}')
 
         print('Done :) ')
         return 0
+
+
+
+Node().listen_for_input()
