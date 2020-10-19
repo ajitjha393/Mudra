@@ -5,10 +5,10 @@ from collections import OrderedDict
 import hashlib
 import json
 
-from hash_util import hash_string_256, hash_block
+from hash_util import hash_block
 from block import Block
 from transaction import Transaction
-
+from verification import Verification
 
 MINING_REWARD = 10.0
 
@@ -103,25 +103,11 @@ def save_data():
         return False
 
 
-def valid_proof(transactions, last_hash, proof):
-    guess = (
-        str(
-            [tx.to_ordered_dict() for tx in transactions]
-        )
-        + str(last_hash)
-        + str(proof)
-    ).encode()
-
-    guess_hash = hash_string_256(guess)
-    # print(guess_hash)
-    return guess_hash[0:2] == '00'
-
-
 def proof_of_work():
     last_block = blockchain[-1]
     last_hash = hash_block(last_block)
     Nonce = 0
-    while not valid_proof(open_transactions, last_hash, Nonce):
+    while not Verification().valid_proof(open_transactions, last_hash, Nonce):
         Nonce += 1
     return Nonce
 
@@ -164,11 +150,6 @@ def get_balance(participant):
     return amount_recieved - amount_sent
 
 
-def verify_transaction(transaction):
-    sender_balance = get_balance(transaction.sender)
-    return sender_balance >= transaction.amount
-
-
 def display_blockchain():
     for block in blockchain:
         print('Outputting Block -> ')
@@ -195,7 +176,7 @@ def add_transaction(recipient, sender=tx_owner, amount=1.0):
 
     new_transaction = Transaction(sender, recipient, amount)
 
-    if verify_transaction(new_transaction):
+    if Verification().verify_transaction(new_transaction, get_balance):
         open_transactions.append(new_transaction)
         save_data()
         return True
@@ -240,31 +221,6 @@ def get_menu_input():
     return int(input('Enter a choice : '))
 
 
-def verify_chain_integrity():
-    '''
-    Verify the hash value of each block and verifies it Integrity
-
-    @return -> Boolean
-    '''
-    for (index, block) in enumerate(blockchain):
-        if index == 0:
-            continue
-        if block.previous_hash != hash_block(blockchain[index - 1]):
-            return False
-        if not valid_proof(block.transactions[:-1], block.previous_hash, block.proof):
-            print('Invalid Proof of work')
-            return False
-
-    return True
-
-
-# A standalone utility fn for verifying open_transactions
-def verify_transactions():
-
-    # one liner using any / all
-    return all([verify_transaction(tx) for tx in open_transactions])
-
-
 def main():
 
     while True:
@@ -285,7 +241,7 @@ def main():
             display_blockchain()
 
         elif choice == 4:
-            if verify_transactions():
+            if Verification().verify_transactions(open_transactions, get_balance):
                 print('All transactions are valid!')
             else:
                 print('Invalid Tx present!')
@@ -293,7 +249,7 @@ def main():
             break
         else:
             print('Invalid Input!')
-        if not verify_chain_integrity():
+        if not Verification().verify_chain_integrity(blockchain):
             print('Block chain has been compromised .... x x x x ')
             break
         print(f'Balance of {tx_owner} = {get_balance(tx_owner):.2f}')
