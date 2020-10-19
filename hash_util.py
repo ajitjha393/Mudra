@@ -11,4 +11,11 @@ def hash_block(block):
     Hashing of block using sha256 algorithm
     '''
     hashable_block = block.__dict__.copy()
+    updated_txs = [
+        tx.to_ordered_dict()
+        for tx in hashable_block['transactions']
+    ]
+    
+    hash_block['transactions'] = updated_txs
+
     return hash_string_256(json.dumps(hashable_block, sort_keys=True).encode())
