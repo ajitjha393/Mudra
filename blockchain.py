@@ -15,7 +15,6 @@ MINING_REWARD = 10.0
 blockchain = []
 open_transactions = []
 tx_owner = 'Bisu Baby'
-participants = {tx_owner}
 
 
 def load_data():
@@ -175,10 +174,6 @@ def display_blockchain():
         print(block)
 
 
-def display_participants():
-    print(participants)
-
-
 def get_last_blockchain_value():
     if len(blockchain) == 0:
         return None
@@ -239,9 +234,8 @@ def get_menu_input():
     print('1. Add a new transaction ')
     print('2. Mine a new block ')
     print('3. Display the Blockchain')
-    print('5. Display the Participants')
-    print('6. Check for validity of Transactions')
-    print('7. Exit the Loop ')
+    print('4. Check for validity of Transactions')
+    print('5. Exit the Loop ')
     return int(input('Enter a choice : '))
 
 
@@ -289,15 +283,12 @@ def main():
         elif choice == 3:
             display_blockchain()
 
-        elif choice == 5:
-            display_participants()
-
-        elif choice == 6:
+        elif choice == 4:
             if verify_transactions():
                 print('All transactions are valid!')
             else:
                 print('Invalid Tx present!')
-        elif choice == 7:
+        elif choice == 5:
             break
         else:
             print('Invalid Input!')
