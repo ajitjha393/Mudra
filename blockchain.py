@@ -171,6 +171,7 @@ def verify_transaction(transaction):
 
 def display_blockchain():
     for block in blockchain:
+        print('Outputting Block -> ')
         print(block)
 
 

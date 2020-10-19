@@ -13,3 +13,6 @@ class Transaction:
             ('recipient', self.recipient),
             ('amount', self.amount)
         ])
+
+    def __repr__(self):
+        return str(self.__dict__)
