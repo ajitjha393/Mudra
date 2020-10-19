@@ -29,16 +29,6 @@ def load_data():
             updated_blockchain = []
 
             for block in blockchain:
-                # converted_tx = [
-                #     OrderedDict(
-                #         [
-                #             ('sender', tx['sender']),
-                #             ('recipient', tx['recipient']),
-                #             ('amount', tx['amount'])
-                #         ]
-                #     ) for tx in block['transactions']
-                # ]
-
                 converted_tx = [
                     Transaction(
                         tx['sender'], tx['recipient'], tx['amount']
@@ -58,15 +48,6 @@ def load_data():
             blockchain = updated_blockchain
 
             open_transactions = json.loads(file_content[1])
-            # updated_open_transactions = [
-            #     OrderedDict(
-            #         [
-            #             ('sender', tx['sender']),
-            #             ('recipient', tx['recipient']),
-            #             ('amount', tx['amount'])
-            #         ]
-            #     ) for tx in open_transactions
-            # ]
 
             updated_open_transactions = [
                 Transaction(
@@ -218,12 +199,6 @@ def add_transaction(recipient, sender=tx_owner, amount=1.0):
 
     new_transaction = Transaction(sender, recipient, amount)
 
-    # new_transaction = OrderedDict([
-    #     ('sender', sender),
-    #     ('recipient', recipient),
-    #     ('amount', amount)]
-    # )
-
     if verify_transaction(new_transaction):
         open_transactions.append(new_transaction)
         save_data()
@@ -236,17 +211,6 @@ def mine_block():
     # Will change hash later
     hashed_block = hash_block(last_block)
     proof = proof_of_work()
-    # reward_tx = {
-    #     'sender': 'MINING',
-    #     'recipient': tx_owner,
-    #     'amount': MINING_REWARD
-    # }
-
-    # reward_tx = OrderedDict([
-    #     ('sender', 'MINING'),
-    #     ('recipient', tx_owner),
-    #     ('amount', MINING_REWARD)
-    # ])
 
     reward_tx = Transaction('MINING', tx_owner, MINING_REWARD)
 
@@ -304,11 +268,6 @@ def verify_transactions():
 
     # one liner using any / all
     return all([verify_transaction(tx) for tx in open_transactions])
-
-    # for tx in open_transactions:
-    #     if not verify_transaction(tx):
-    #         return False
-    # return True
 
 
 def main():
