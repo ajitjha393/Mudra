@@ -7,6 +7,7 @@ import json
 
 from hash_util import hash_string_256, hash_block
 from block import Block
+from transaction import Transaction
 
 
 MINING_REWARD = 10.0
@@ -28,14 +29,21 @@ def load_data():
             updated_blockchain = []
 
             for block in blockchain:
+                # converted_tx = [
+                #     OrderedDict(
+                #         [
+                #             ('sender', tx['sender']),
+                #             ('recipient', tx['recipient']),
+                #             ('amount', tx['amount'])
+                #         ]
+                #     ) for tx in block['transactions']
+                # ]
+
                 converted_tx = [
-                    OrderedDict(
-                        [
-                            ('sender', tx['sender']),
-                            ('recipient', tx['recipient']),
-                            ('amount', tx['amount'])
-                        ]
-                    ) for tx in block['transactions']
+                    Transaction(
+                        tx['sender'], tx['recipient'], tx['amount']
+                    )
+                    for tx in block['transactions']
                 ]
 
                 updated_block = Block(
