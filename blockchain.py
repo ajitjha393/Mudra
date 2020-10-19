@@ -58,19 +58,26 @@ def load_data():
             blockchain = updated_blockchain
 
             open_transactions = json.loads(file_content[1])
+            # updated_open_transactions = [
+            #     OrderedDict(
+            #         [
+            #             ('sender', tx['sender']),
+            #             ('recipient', tx['recipient']),
+            #             ('amount', tx['amount'])
+            #         ]
+            #     ) for tx in open_transactions
+            # ]
+
             updated_open_transactions = [
-                OrderedDict(
-                    [
-                        ('sender', tx['sender']),
-                        ('recipient', tx['recipient']),
-                        ('amount', tx['amount'])
-                    ]
-                ) for tx in open_transactions
+                Transaction(
+                    tx['sender'], tx['recipient'], tx['amount']
+                )
+                for tx in open_transactions
             ]
 
             open_transactions = updated_open_transactions
 
-    except IOError:
+    except (IOError, IndexError):
         print('File does not exist...')
 
         genesis_block = Block(0, '', [], 100, 0)
@@ -92,7 +99,8 @@ def save_data():
             saveable_chain = [block.__dict__ for block in blockchain]
             f.write(json.dumps(saveable_chain))
             f.write('\n')
-            f.write(json.dumps(open_transactions))
+            saveable_tx = [tx.__dict__ for tx in open_transactions]
+            f.write(json.dumps(saveable_tx))
         return True
 
     except IOError:
@@ -101,7 +109,14 @@ def save_data():
 
 
 def valid_proof(transactions, last_hash, proof):
-    guess = (str(transactions) + str(last_hash) + str(proof)).encode()
+    guess = (
+        str(
+            [tx.to_ordered_dict() for tx in transactions]
+        )
+        + str(last_hash)
+        + str(proof)
+    ).encode()
+
     guess_hash = hash_string_256(guess)
     # print(guess_hash)
     return guess_hash[0:2] == '00'
@@ -121,15 +136,15 @@ def get_balance(participant):
 
     tx_sender = [
         [
-            tx['amount']
-            for tx in block.transactions if tx['sender'] == participant
+            tx.amount
+            for tx in block.transactions if tx.sender == participant
         ]
         for block in blockchain
     ]
 
     open_tx_sender = [
-        tx['amount']
-        for tx in open_transactions if tx['sender'] == participant
+        tx.amount
+        for tx in open_transactions if tx.sender == participant
     ]
 
     tx_sender.append(open_tx_sender)
@@ -141,8 +156,8 @@ def get_balance(participant):
 
     tx_recipient = [
         [
-            tx['amount']
-            for tx in block.transactions if tx['recipient'] == participant
+            tx.amount
+            for tx in block.transactions if tx.recipient == participant
         ]
         for block in blockchain
     ]
@@ -155,8 +170,8 @@ def get_balance(participant):
 
 
 def verify_transaction(transaction):
-    sender_balance = get_balance(transaction['sender'])
-    return sender_balance >= transaction['amount']
+    sender_balance = get_balance(transaction.sender)
+    return sender_balance >= transaction.amount
 
 
 def display_blockchain():
@@ -186,16 +201,16 @@ def add_transaction(recipient, sender=tx_owner, amount=1.0):
 
     '''
 
-    new_transaction = OrderedDict([
-        ('sender', sender),
-        ('recipient', recipient),
-        ('amount', amount)]
-    )
+    new_transaction = Transaction(sender, recipient, amount)
+
+    # new_transaction = OrderedDict([
+    #     ('sender', sender),
+    #     ('recipient', recipient),
+    #     ('amount', amount)]
+    # )
 
     if verify_transaction(new_transaction):
         open_transactions.append(new_transaction)
-        participants.add(sender)
-        participants.add(recipient)
         save_data()
         return True
     return False
@@ -212,11 +227,13 @@ def mine_block():
     #     'amount': MINING_REWARD
     # }
 
-    reward_tx = OrderedDict([
-        ('sender', 'MINING'),
-        ('recipient', tx_owner),
-        ('amount', MINING_REWARD)
-    ])
+    # reward_tx = OrderedDict([
+    #     ('sender', 'MINING'),
+    #     ('recipient', tx_owner),
+    #     ('amount', MINING_REWARD)
+    # ])
+
+    reward_tx = Transaction('MINING', tx_owner, MINING_REWARD)
 
     copied_open_transactions = open_transactions[:]
 
