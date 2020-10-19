@@ -15,7 +15,7 @@ def hash_block(block):
         tx.to_ordered_dict()
         for tx in hashable_block['transactions']
     ]
-    
-    hash_block['transactions'] = updated_txs
+
+    hashable_block['transactions'] = updated_txs
 
     return hash_string_256(json.dumps(hashable_block, sort_keys=True).encode())
