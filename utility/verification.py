@@ -1,3 +1,7 @@
+"""
+Provides Blockhain & Transactions Verification Helper Methods
+"""
+
 from utility.hash_util import hash_string_256, hash_block
 
 

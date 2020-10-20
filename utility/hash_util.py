@@ -1,3 +1,8 @@
+"""
+Module for Dumping Blockchain Data in Json and hashing using sha256 Algo
+"""
+
+
 import hashlib
 import json
 
