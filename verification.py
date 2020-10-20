@@ -3,7 +3,8 @@ from hash_util import hash_string_256, hash_block
 
 class Verification:
 
-    def valid_proof(self, transactions, last_hash, proof):
+    @staticmethod
+    def valid_proof(transactions, last_hash, proof):
         guess = (
             str(
                 [tx.to_ordered_dict() for tx in transactions]
@@ -16,7 +17,8 @@ class Verification:
         # print(guess_hash)
         return guess_hash[0:2] == '00'
 
-    def verify_chain_integrity(self, blockchain):
+    @classmethod
+    def verify_chain_integrity(cls, blockchain):
         '''
         Verify the hash value of each block and verifies it Integrity
 
@@ -27,16 +29,18 @@ class Verification:
                 continue
             if block.previous_hash != hash_block(blockchain[index - 1]):
                 return False
-            if not self.valid_proof(block.transactions[:-1], block.previous_hash, block.proof):
+            if not cls.valid_proof(block.transactions[:-1], block.previous_hash, block.proof):
                 print('Invalid Proof of work')
                 return False
 
         return True
 
-    def verify_transaction(self, transaction, get_balance):
+    @staticmethod
+    def verify_transaction(transaction, get_balance):
         sender_balance = get_balance()
         return sender_balance >= transaction.amount
 
-    def verify_transactions(self, open_transactions, get_balance):
+    @classmethod
+    def verify_transactions(cls, open_transactions, get_balance):
         # one liner using any / all
-        return all([self.verify_transaction(tx, get_balance) for tx in open_transactions])
+        return all([cls.verify_transaction(tx, get_balance) for tx in open_transactions])
