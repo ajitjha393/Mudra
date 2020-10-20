@@ -10,7 +10,7 @@ class Node:
         # Will add public wallet key later
 
         self.wallet = Wallet()
-        self.blockchain = Blockchain(self.wallet.public_key)
+        self.blockchain = None
 
     def get_transaction_input(self):
         tx_recipient = input('Enter the Recipient of the Transacation: ')
@@ -57,6 +57,7 @@ class Node:
                     print('Invalid Tx present!')
             elif choice == 5:
                 self.wallet.create_keys()
+                self.blockchain = Blockchain(self.wallet.public_key)
 
             elif choice == 6:
                 pass
