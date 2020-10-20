@@ -1,3 +1,4 @@
+from wallet import Wallet
 from blockchain import Blockchain
 from uuid import uuid4
 from utility.verification import Verification
@@ -5,10 +6,11 @@ from utility.verification import Verification
 
 class Node:
     def __init__(self):
-        # self.id = str(uuid4())
+        # self.wallet.public_key = str(uuid4())
         # Will add public wallet key later
-        self.id = 'Bisu_baby'
-        self.blockchain = Blockchain(self.id)
+
+        self.wallet = Wallet()
+        self.blockchain = Blockchain(self.wallet.public_key)
 
     def get_transaction_input(self):
         tx_recipient = input('Enter the Recipient of the Transacation: ')
@@ -20,7 +22,9 @@ class Node:
         print('2. Mine a new block ')
         print('3. Display the Blockchain')
         print('4. Check for validity of Transactions')
-        print('5. Exit the Loop ')
+        print('5. Create Wallet')
+        print('6. Load Wallet')
+        print('7. Exit the Loop ')
         return int(input('Enter a choice : '))
 
     def display_blockchain(self):
@@ -33,7 +37,7 @@ class Node:
             choice = self.get_menu_input()
             if choice == 1:
                 tx_recipient, tx_amount = self.get_transaction_input()
-                if self.blockchain.add_transaction(recipient=tx_recipient, sender=self.id, amount=tx_amount):
+                if self.blockchain.add_transaction(recipient=tx_recipient, sender=self.wallet.public_key, amount=tx_amount):
                     print('Added Transaction')
                 else:
                     print('Transaction Failed!')
@@ -50,6 +54,12 @@ class Node:
                 else:
                     print('Invalid Tx present!')
             elif choice == 5:
+                self.wallet.create_keys()
+
+            elif choice == 6:
+                pass
+            
+            elif choice == 7:
                 break
             else:
                 print('Invalid Input!')
@@ -57,7 +67,7 @@ class Node:
                 print('Block chain has been compromised .... x x x x ')
                 break
             print(
-                f'Balance of {self.id} = {self.blockchain.get_balance():.2f}')
+                f'Balance of {self.wallet.public_key} = {self.blockchain.get_balance():.2f}')
 
         print('Done :) ')
         return 0
