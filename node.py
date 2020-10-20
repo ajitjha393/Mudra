@@ -44,7 +44,9 @@ class Node:
                 print(self.blockchain.get_open_transactions())
 
             elif choice == 2:
-                self.blockchain.mine_block()
+                if not self.blockchain.mine_block():
+                    print('Mining Failed...Got wallet ?')
+
             elif choice == 3:
                 self.display_blockchain()
 

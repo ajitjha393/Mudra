@@ -165,6 +165,8 @@ class Blockchain:
             :amount -> float | Transaction amount
 
         '''
+        if self.hosting_node == None:
+            return False
 
         new_transaction = Transaction(sender, recipient, amount)
 
@@ -175,6 +177,10 @@ class Blockchain:
         return False
 
     def mine_block(self):
+
+        if self.hosting_node == None:
+            return False
+            
         last_block = self.__chain[-1]
         hashed_block = hash_block(last_block)
         proof = self.proof_of_work()
