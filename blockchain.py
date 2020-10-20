@@ -100,7 +100,7 @@ class Blockchain:
         last_block = self.chain[-1]
         last_hash = hash_block(last_block)
         Nonce = 0
-        while not Verification().valid_proof(self.open_transactions, last_hash, Nonce):
+        while not Verification.valid_proof(self.open_transactions, last_hash, Nonce):
             Nonce += 1
         return Nonce
 
@@ -161,7 +161,7 @@ class Blockchain:
 
         new_transaction = Transaction(sender, recipient, amount)
 
-        if Verification().verify_transaction(new_transaction, self.get_balance):
+        if Verification.verify_transaction(new_transaction, self.get_balance):
             self.open_transactions.append(new_transaction)
             self.save_data()
             return True

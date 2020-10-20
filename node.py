@@ -44,7 +44,7 @@ class Node:
                 self.display_blockchain()
 
             elif choice == 4:
-                if Verification().verify_transactions(self.blockchain.open_transactions, self.blockchain.get_balance):
+                if Verification.verify_transactions(self.blockchain.open_transactions, self.blockchain.get_balance):
                     print('All transactions are valid!')
                 else:
                     print('Invalid Tx present!')
@@ -52,7 +52,7 @@ class Node:
                 break
             else:
                 print('Invalid Input!')
-            if not Verification().verify_chain_integrity(self.blockchain.chain):
+            if not Verification.verify_chain_integrity(self.blockchain.chain):
                 print('Block chain has been compromised .... x x x x ')
                 break
             print(
@@ -60,7 +60,6 @@ class Node:
 
         print('Done :) ')
         return 0
-
 
 
 Node().listen_for_input()
