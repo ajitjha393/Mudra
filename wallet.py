@@ -16,7 +16,7 @@ class Wallet:
 
     def generate_keys(self):
         private_key = RSA.generate(1024, Crypto.Random.new().read)
-        public_key = private_key.publicKey()
+        public_key = private_key.publickey()
 
         return (
             binascii.hexlify(private_key.exportKey(format='DER')).decode('ascii'),
