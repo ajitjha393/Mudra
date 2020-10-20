@@ -63,4 +63,5 @@ class Node:
         return 0
 
 
-Node().listen_for_input()
+if __name__ == '__main__':
+    Node().listen_for_input()
