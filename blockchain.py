@@ -172,8 +172,6 @@ class Blockchain:
 
         new_transaction = Transaction(sender, recipient, signature, amount)
         
-        if not Wallet.verify_tx_signature(new_transaction):
-            return False
 
         if Verification.verify_transaction(new_transaction, self.get_balance):
             self.__open_transactions.append(new_transaction)
@@ -194,6 +192,11 @@ class Blockchain:
 
         copied_open_transactions = self.__open_transactions[:]
 
+        for tx in copied_open_transactions:
+            if not Wallet.verify_tx_signature(tx):
+                return False
+
+
         copied_open_transactions.append(reward_tx)
 
         block = Block(
@@ -202,11 +205,6 @@ class Blockchain:
             copied_open_transactions,
             proof
         )
-
-        for tx in block.transactions:
-            print(tx ,'---------')
-            if not Wallet.verify_tx_signature(tx):
-                return False
 
         self.__chain.append(block)
         self.__open_transactions = []

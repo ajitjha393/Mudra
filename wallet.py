@@ -53,9 +53,7 @@ class Wallet:
         return binascii.hexlify(signature).decode('ascii')
 
     @staticmethod
-    def verify_tx_signature(transaction):
-        if transaction.sender == 'MINING':
-            return True    
+    def verify_tx_signature(transaction):  
         public_key =  RSA.importKey(binascii.unhexlify(transaction.sender))
         verifier =  PKCS1_v1_5.new(public_key)
         h = SHA256.new(
