@@ -40,7 +40,7 @@ class Blockchain:
                 for block in self.__chain:
                     converted_tx = [
                         Transaction(
-                            tx['sender'], tx['recipient'], tx['amount']
+                            tx['sender'], tx['recipient'], tx['signature'], tx['amount']
                         )
                         for tx in block['transactions']
                     ]
@@ -60,7 +60,7 @@ class Blockchain:
 
                 updated_open_transactions = [
                     Transaction(
-                        tx['sender'], tx['recipient'], tx['amount']
+                        tx['sender'], tx['recipient'], tx['signature'], tx['amount']
                     )
                     for tx in self.__open_transactions
                 ]
@@ -162,13 +162,14 @@ class Blockchain:
 
             :sender -> str | Info about sender of coins \n
             :recipient -> str | Info about recipient of coins \n
+            :signature -> str | Signature of the tx \n
             :amount -> float | Transaction amount
 
         '''
         if self.hosting_node == None:
             return False
 
-        new_transaction = Transaction(sender, recipient, amount)
+        new_transaction = Transaction(sender, recipient, signature, amount)
 
         if Verification.verify_transaction(new_transaction, self.get_balance):
             self.__open_transactions.append(new_transaction)
@@ -185,7 +186,7 @@ class Blockchain:
         hashed_block = hash_block(last_block)
         proof = self.proof_of_work()
 
-        reward_tx = Transaction('MINING', self.hosting_node, MINING_REWARD)
+        reward_tx = Transaction('MINING', self.hosting_node, '',  MINING_REWARD)
 
         copied_open_transactions = self.__open_transactions[:]
 
