@@ -10,6 +10,7 @@ from utility.verification import Verification
 
 from block import Block
 from transaction import Transaction
+from wallet import Wallet
 
 MINING_REWARD = 10.0
 
@@ -62,7 +63,7 @@ class Blockchain:
                     Transaction(
                         tx['sender'], tx['recipient'], tx['signature'], tx['amount']
                     )
-                    for tx in self.__open_transactions
+                    for tx in open_transactions
                 ]
 
                 self.__open_transactions = updated_open_transactions
@@ -170,6 +171,9 @@ class Blockchain:
             return False
 
         new_transaction = Transaction(sender, recipient, signature, amount)
+        
+        if not Wallet.verify_tx_signature(new_transaction):
+            return False
 
         if Verification.verify_transaction(new_transaction, self.get_balance):
             self.__open_transactions.append(new_transaction)
@@ -198,6 +202,11 @@ class Blockchain:
             copied_open_transactions,
             proof
         )
+
+        for tx in block.transactions:
+            print(tx ,'---------')
+            if not Wallet.verify_tx_signature(tx):
+                return False
 
         self.__chain.append(block)
         self.__open_transactions = []

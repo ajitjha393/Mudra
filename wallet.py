@@ -47,16 +47,16 @@ class Wallet:
         )
 
     def sign_transactions(self, sender, recipient, amount):
-        signer = PKCS1_v1_5.new(RSA.import_key(binascii.unhexlify(self.private_key)))
+        signer = PKCS1_v1_5.new(RSA.importKey(binascii.unhexlify(self.private_key)))
         h = SHA256.new((str(sender) + str(recipient) + str(amount) ).encode('utf8'))
         signature = signer.sign(h)
         return binascii.hexlify(signature).decode('ascii')
 
-    @classmethod
+    @staticmethod
     def verify_tx_signature(transaction):
         if transaction.sender == 'MINING':
             return True    
-        public_key =  RSA.import_key(binascii.unhexlify(transaction.sender))
+        public_key =  RSA.importKey(binascii.unhexlify(transaction.sender))
         verifier =  PKCS1_v1_5.new(public_key)
         h = SHA256.new(
             (str(transaction.sender) + str(transaction.recipient) + str(transaction.amount))
