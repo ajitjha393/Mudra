@@ -11,20 +11,26 @@ class Wallet:
     def create_keys(self):
         private_key , public_key = self.generate_keys()
         self.private_key , self.public_key =  private_key , public_key
-        with open('wallet.txt',mode='w') as f:
-            f.write(public_key)
-            f.write('\n')
-            f.write(private_key)
-            
+        try:
+            with open('wallet.txt',mode='w') as f:
+                f.write(public_key)
+                f.write('\n')
+                f.write(private_key)
+
+        except (IOError , IndexError):
+            print('Saving Wallet Failed ...')
 
 
     def load_keys(self):
-        with open('wallet.txt', mode='r') as f:
-            keys = f.readlines()
-            public_key = keys[0][:-1]
-            private_key = keys[1]
-            self.public_key , self.private_key = public_key , private_key
-
+        try :
+            with open('wallet.txt', mode='r') as f:
+                keys = f.readlines()
+                public_key = keys[0][:-1]
+                private_key = keys[1]
+                self.public_key , self.private_key = public_key , private_key
+        
+        except(IOError, IndexError):
+            print('Loading Wallet Failed...')
 
     def generate_keys(self):
         private_key = RSA.generate(1024, Crypto.Random.new().read)
