@@ -1,5 +1,5 @@
 from binascii import hexlify
-from Crypto.PublicKey import PublicKey, RSA
+from Crypto.PublicKey import RSA
 import Crypto.Random
 import binascii
 
