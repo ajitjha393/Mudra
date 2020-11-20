@@ -7,10 +7,11 @@ from utility.verification import Verification
 class Node:
     def __init__(self):
         # self.wallet.public_key = str(uuid4())
-        # Will add public wallet key later
+      
 
         self.wallet = Wallet()
-        self.blockchain = None
+        self.wallet.create_keys()
+        self.blockchain = Blockchain(self.wallet.public_key)
 
     def get_transaction_input(self):
         tx_recipient = input('Enter the Recipient of the Transacation: ')
