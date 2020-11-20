@@ -25,7 +25,8 @@ class Node:
         print('4. Check for validity of Transactions')
         print('5. Create Wallet')
         print('6. Load Wallet')
-        print('7. Exit the Loop ')
+        print('7. Save Keys')
+        print('8. Exit the Loop ')
         return int(input('Enter a choice : '))
 
     def display_blockchain(self):
@@ -61,9 +62,13 @@ class Node:
                 self.blockchain = Blockchain(self.wallet.public_key)
 
             elif choice == 6:
-                pass
-            
+                self.wallet.load_keys()
+                self.blockchain = Blockchain(self.wallet.public_key)
+
             elif choice == 7:
+                self.wallet.save_keys()
+
+            elif choice == 8:
                 break
             else:
                 print('Invalid Input!')

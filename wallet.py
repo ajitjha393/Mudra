@@ -11,14 +11,17 @@ class Wallet:
     def create_keys(self):
         private_key , public_key = self.generate_keys()
         self.private_key , self.public_key =  private_key , public_key
-        try:
-            with open('wallet.txt',mode='w') as f:
-                f.write(public_key)
-                f.write('\n')
-                f.write(private_key)
+        
+    def save_keys(self):
+        if self.public_key and self.private_key:
+            try:
+                with open('wallet.txt',mode='w') as f:
+                    f.write(self.public_key)
+                    f.write('\n')
+                    f.write(self.private_key)
 
-        except (IOError , IndexError):
-            print('Saving Wallet Failed ...')
+            except (IOError , IndexError):
+                print('Saving Wallet Failed ...')
 
 
     def load_keys(self):
