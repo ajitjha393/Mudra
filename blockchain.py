@@ -154,7 +154,7 @@ class Blockchain:
             return None
         return self.__chain[-1]
 
-    def add_transaction(self, recipient, sender, amount=1.0):
+    def add_transaction(self, recipient, sender,signature, amount=1.0):
         ''' 
             Add new transaction to the open transaction list
 
