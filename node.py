@@ -1,5 +1,4 @@
-from flask import Flask, jsonify
-from flask.signals import message_flashed
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from wallet import Wallet
 from blockchain import Blockchain
@@ -10,6 +9,9 @@ wallet = Wallet()
 blockchain = Blockchain(wallet.public_key)
 
 CORS(app)
+
+
+# BLOCKCHAIN ROUTES 
 
 @app.route('/', methods=['GET'])
 def get_ui():
@@ -51,6 +53,8 @@ def mine_block():
         return jsonify(response), 500
 
 
+
+# WALLET ROUTES
 
 @app.route('/balance', methods=['GET'])
 def get_balance():
@@ -109,6 +113,59 @@ def load_keys():
             'message' : 'Loading keys failed.'
         }
         return jsonify(response), 500
+
+
+
+# TRANSACTION ROUTES
+
+@app.route('/transaction', methods=['POST'])
+def add_transaction():
+
+    if wallet.public_key == None:
+        return jsonify({
+            'message': 'No wallet setup.'
+        }), 400
+
+    values = request.get_json()
+    if not values:
+        response = {
+            'message': 'No data found...',
+        }
+        return jsonify(response), 400
+
+    required_fields = ['recipient', 'amount']
+
+    if not all(field in values for field in required_fields) :
+        return jsonify ({
+            'message': 'Required fields are missing.'
+        }) , 400
+
+    recipient = values['recipient']
+    amount = values['amount']
+    signature = wallet.sign_transactions(wallet.public_key, recipient, amount)  
+    added_tx = blockchain.add_transaction(recipient, wallet.public_key, signature, amount)  
+
+    if added_tx:
+        response = {
+            'message': 'Successfully added tx',
+            'transaction': {
+                'sender': wallet.public_key,
+                'recipient': recipient,
+                'amount': amount,
+                'signature': signature
+            },
+            'funds': blockchain.get_balance()
+        }
+
+        return jsonify(response), 201
+
+    else:
+        response = {
+            'message': 'Creating a Tx Failed.'
+        }
+
+        return jsonify(response), 500    
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5000)
