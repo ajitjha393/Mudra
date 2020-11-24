@@ -167,6 +167,20 @@ def add_transaction():
         return jsonify(response), 500    
 
 
+
+
+@app.route('/transactions', methods=['GET'])
+def get_open_txs():
+    open_txs = blockchain.get_open_transactions()
+    dict_open_txs = [tx.__dict__ for tx in open_txs]
+    response = {
+        'message': 'Fetched Transactions successfully',
+        'transactions': dict_open_txs
+    }
+    return jsonify(response), 200
+
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5000)
 
