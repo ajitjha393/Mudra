@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from flask.signals import message_flashed
 from flask_cors import CORS
 from wallet import Wallet
 from blockchain import Blockchain
@@ -50,6 +51,26 @@ def mine_block():
 
 
 
+@app.route('/wallet', methods=['POST'])
+def create_keys():
+    wallet.create_keys()
+    if wallet.save_keys():
+        response = {
+            'public_key': wallet.public_key,
+            'private_key': wallet.private_key
+        }
+        return jsonify(response), 201    
+    else:
+        response = {
+            'message' : 'Saving keys failed.'
+        }
+        return jsonify(response), 500
+
+
+    
+@app.route('/wallet', methods=['GET'])
+def load_keys():
+    pass
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5000)
