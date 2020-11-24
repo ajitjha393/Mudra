@@ -115,6 +115,9 @@ class Blockchain:
     def get_balance(self):
         # tx_sender stores amount from transactions where sender => participant
 
+        if self.hosting_node == None:
+            return None
+
         participant = self.hosting_node
         tx_sender = [
             [
