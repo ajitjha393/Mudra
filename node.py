@@ -28,11 +28,13 @@ def get_chain():
 @app.route('/mine', methods=['POST'])
 def mine_block():
     block = blockchain.mine_block()
+    dict_block = block.__dict__.copy()
+    dict_block['transactions'] = [tx.__dict__ for tx in dict_block['transactions']]
     
     if block != None:
         return jsonify({
             'message': 'Block Added successfully...',
-            'block' : block
+            'block' : dict_block
         }),  201
 
     else:
