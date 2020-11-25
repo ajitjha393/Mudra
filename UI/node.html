@@ -340,21 +340,16 @@
 					},
 					onLoadData: function () {
 						if (this.view === 'chain') {
-							// Load blockchain data
-							if (Math.random() > 0.5) {
-								this.error = null;
-							} else {
-								this.success = null;
-								this.error = 'Something went wrong!';
-							}
+							// Load Blockchain Data
+							axios
+								.get('/chain')
+								.then(res => {
+									console.log(res.data);
+									this.blockchain = res.data;
+								})
+								.catch(err => console.log(err));
 						} else {
-							// Load transaction data
-							if (Math.random() > 0.5) {
-								this.error = null;
-							} else {
-								this.success = null;
-								this.error = 'Something went wrong!';
-							}
+							// Load Open Transactions Data
 						}
 					},
 				},
