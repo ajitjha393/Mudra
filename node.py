@@ -184,6 +184,31 @@ def get_ui():
 
 
 
+@app.route('/node', methods=['POST'])
+def add_node():
+    values = request.get_json()
+    if not values:
+        response = {
+            'message': 'No data attached...',
+        }
+        return jsonify(response), 400
+
+    if 'node' not in values:
+        response = {
+            'message': 'No node data found ...'
+        }
+        return jsonify(response), 400   
+
+    node = values['node']     
+    blockchain.add_peer_node(node)
+    response = {
+        'message': 'Node added successfully!',
+        'all_nodes': list(blockchain.get_peer_nodes())
+    }
+
+    return jsonify(response), 200 
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5000)
