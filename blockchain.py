@@ -234,4 +234,9 @@ class Blockchain:
         :node -> str | The node Url which should be removed
         '''
         self.__peer_nodes.discard(node)
-        self.save_data()    
+        self.save_data()
+
+    def get_peer_nodes(self):
+        '''Returns a copy of all peer nodes \n'''
+        
+        return self.__peer_nodes[:] 
