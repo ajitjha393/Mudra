@@ -22,6 +22,7 @@ class Blockchain:
         self.hosting_node = hosting_node_id
 
         self.__open_transactions = []
+        self.__peer_nodes = set()
         self.load_data()
 
     def get_chain(self):
@@ -57,7 +58,7 @@ class Blockchain:
 
                 self.__chain = updated_blockchain
 
-                open_transactions = json.loads(file_content[1])
+                open_transactions = json.loads(file_content[1][:-1])
 
                 updated_open_transactions = [
                     Transaction(
@@ -67,6 +68,9 @@ class Blockchain:
                 ]
 
                 self.__open_transactions = updated_open_transactions
+                peer_nodes = json.loads(file_content[2])
+                self.__peer_nodes = set(peer_nodes)
+
 
         except (IOError, IndexError):
             print('Handling exception...')
@@ -98,6 +102,8 @@ class Blockchain:
                 f.write('\n')
                 saveable_tx = [tx.__dict__ for tx in self.__open_transactions]
                 f.write(json.dumps(saveable_tx))
+                f.write('\n')
+                f.write(json.dumps(list(self.__peer_nodes)))
             return True
 
         except IOError:
@@ -213,3 +219,11 @@ class Blockchain:
         self.__open_transactions = []
         self.save_data()
         return block
+
+    def add_peer_node(self, node):
+        '''
+        Add a new node to the Peer node set\n
+        :node -> str | The node Url which should be added
+        '''
+        self.__peer_nodes.add(node)
+        self.save_data()
