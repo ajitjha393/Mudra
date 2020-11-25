@@ -203,7 +203,7 @@ def add_node():
     blockchain.add_peer_node(node)
     response = {
         'message': 'Node added successfully!',
-        'all_nodes': list(blockchain.get_peer_nodes())
+        'all_nodes': blockchain.get_peer_nodes()
     }
 
     return jsonify(response), 200 
