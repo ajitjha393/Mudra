@@ -110,6 +110,55 @@ def load_keys():
 
 
 
+# BROADCASTING ROUTES
+
+@app.route('/transaction', methods=['POST'])
+def broadcast_transaction():
+    values = request.get_json()
+    if not values:
+        response = {
+            'message': 'No data found...',
+        }
+        return jsonify(response), 400
+
+    required_fields = ['sender', 'recipient', 'amount', 'signature']    
+
+    if not all(key in values for key in required_fields):
+        return jsonify ({
+            'message': 'Required fields are missing.'
+        }) , 400
+
+    sender = values['sender']
+    recipient = values['recipient']
+    signature = values['signature']
+    amount = values['amount']
+
+    success = blockchain.add_transaction(recipient, sender, signature, amount)
+
+    if success:
+        response = {
+            'message': 'Successfully added tx',
+            'transaction': {
+                'sender': sender,
+                'recipient': recipient,
+                'amount': amount,
+                'signature': signature
+            }
+        }
+
+        return jsonify(response), 201
+
+    else:
+        response = {
+            'message': 'Creating a Tx Failed.'
+        }
+
+        return jsonify(response), 500    
+
+
+
+
+
 # TRANSACTION ROUTES
 
 @app.route('/transaction', methods=['POST'])
