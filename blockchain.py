@@ -120,13 +120,16 @@ class Blockchain:
             Nonce += 1
         return Nonce
 
-    def get_balance(self):
+    def get_balance(self, sender=None):
         # tx_sender stores amount from transactions where sender => participant
 
-        if self.public_key == None:
-            return None
-
-        participant = self.public_key
+        if sender == None:
+            if self.public_key == None:
+                return None
+            participant = self.public_key
+        else:
+            participant = sender
+        
         tx_sender = [
             [
                 tx.amount
