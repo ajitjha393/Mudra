@@ -82,7 +82,7 @@ class Blockchain:
     def save_data(self):
         try:
 
-            with open('blockchain-{}.txt'.format(self.node_id).txt, mode='w') as f:
+            with open('blockchain-{}.txt'.format(self.node_id), mode='w') as f:
                 saveable_chain = [
                     block.__dict__
                     for block in [
