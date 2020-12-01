@@ -169,7 +169,7 @@ class Blockchain:
             return None
         return self.__chain[-1]
 
-    def add_transaction(self, recipient, sender,signature, amount=1.0):
+    def add_transaction(self, recipient, sender,signature, amount=1.0, is_receiving=False):
         ''' 
             Add new transaction to the open transaction list
 
@@ -190,22 +190,22 @@ class Blockchain:
         if Verification.verify_transaction(new_transaction, self.get_balance):
             self.__open_transactions.append(new_transaction)
             self.save_data()
-            for node in self.__peer_nodes:
-                url = 'http://{}/broadcast-transaction'.format(node)
-                try:
-                    response = requests.post(url,json={
-                            'sender': sender,
-                            'recipient': recipient,
-                            'amount': amount,
-                            'signature': signature
-                        })
-                    
-                    if response.status_code == 400 or response.status_code == 500:
-                        print('Transaction Declined, needs Resolving!')
-                        return False
-                except requests.exceptions.ConnectionError:
-                    continue        
-
+            if not is_receiving:
+                for node in self.__peer_nodes:
+                    url = 'http://{}/broadcast-transaction'.format(node)
+                    try:
+                        response = requests.post(url,json={
+                                'sender': sender,
+                                'recipient': recipient,
+                                'amount': amount,
+                                'signature': signature
+                            })
+                        
+                        if response.status_code == 400 or response.status_code == 500:
+                            print('Transaction Declined, needs Resolving!')
+                            return False
+                    except requests.exceptions.ConnectionError:
+                        continue        
             return True
         return False
 
