@@ -57,7 +57,7 @@ def mine_block():
 
 @app.route('/resolve-conflicts', methods=['POST'])
 def resolve_conflicts():
-    replaced = blockchain.resolve_conflicts()
+    replaced = blockchain.resolve()
     if replaced:
         response = {
             'message': 'Chain was replaced!'
