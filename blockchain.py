@@ -266,7 +266,8 @@ class Blockchain:
         )    
         
         self.__chain.append(converted_block)
-
+        self.save_data()
+        return True
 
 
 
