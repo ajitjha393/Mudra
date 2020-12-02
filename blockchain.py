@@ -268,7 +268,7 @@ class Blockchain:
                 for tx in block['transactions']
             ]        
 
-        proof_is_valid = Verification.valid_proof(transactions, block['previous_hash'], block['proof'])
+        proof_is_valid = Verification.valid_proof(transactions[:-1], block['previous_hash'], block['proof'])
         hashes_match = hash_block(self.__chain[-1]) == block['previous_hash']
 
         if not proof_is_valid or not hashes_match:
