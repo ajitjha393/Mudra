@@ -156,6 +156,32 @@ def broadcast_transaction():
         return jsonify(response), 500    
 
 
+@app.route('/broadcast-block', methods=['POST'])
+def broadcast_block():
+    values = request.get_json()
+    if not values:
+        response = {
+            'message': 'No data found...',
+        }
+        return jsonify(response), 400
+
+    if 'block' not in values:
+        return jsonify ({
+            'message': 'Required fields are missing.'
+        }) , 400
+    
+    block = values['block']
+    if block['index'] == blockchain.__chain[-1].index + 1:
+        pass
+    elif block['index'] > blockchain.__chain[-1].index:
+        pass
+    else:
+        response = {
+            'message': 'Blockchain seems to be shorter/stale, Block not added!'
+        }
+        return jsonify(response), 409 # Means outdated-invalid data
+    
+
 
 
 
