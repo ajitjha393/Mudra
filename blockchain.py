@@ -286,6 +286,20 @@ class Blockchain:
         )    
         
         self.__chain.append(converted_block)
+        stored_transactions = self.__open_transactions[:]
+        for itx in block['transactions']:
+            for open_tx in stored_transactions:
+                if (
+                    open_tx.sender == itx['sender'] and
+                    open_tx.recipient == itx['recipient'] and
+                    open_tx.amount == itx['amount'] and
+                    open_tx.signature == itx['signature']
+                ):
+                    try:
+                       self.__open_transactions.remove(open_tx)
+                    except ValueError :
+                        print('Item was Already Removed!')
+
         self.save_data()
         return True
 
