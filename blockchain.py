@@ -308,6 +308,28 @@ class Blockchain:
         return True
 
 
+    def resolve(self):
+        for node in self.__peer_nodes:
+            url = 'http://{}/chain'.format(node)
+            try:
+                response = requests.get(url)
+                node_chain = response.json()
+                node_chain = [
+                     Block(
+                        block['index'],
+                        block['previous_hash'],
+                        block['transactions'],
+                        block['proof'], 
+                        block['timestamp']
+                    )
+                    for block in node_chain
+                ]
+
+
+            except requests.exceptions.ConnectionError:
+                continue            
+        pass
+
 
 
     def add_peer_node(self, node):
