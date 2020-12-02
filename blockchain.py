@@ -325,6 +325,15 @@ class Blockchain:
                     for block in node_chain
                 ]
 
+                node_chain['transactions'] = [
+                    Transaction(
+                        tx['sender'],
+                        tx['recipient'],
+                        tx['signature'],
+                        tx['amount'] 
+                    )  
+                    for tx in node_chain['transactions']
+                ]
 
             except requests.exceptions.ConnectionError:
                 continue            
