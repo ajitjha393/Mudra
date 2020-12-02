@@ -53,6 +53,25 @@ def mine_block():
 
 
 
+# RESOLVING CONFLICTS ROUTE
+
+@app.route('/resolve-conflicts', methods=['POST'])
+def resolve_conflicts():
+    replaced = blockchain.resolve_conflicts()
+    if replaced:
+        response = {
+            'message': 'Chain was replaced!'
+        }
+    else:
+        response = {
+            'message': 'Local Chain was kept!'
+        }    
+
+    return jsonify(response), 200
+
+
+
+
 # WALLET ROUTES
 
 @app.route('/balance', methods=['GET'])
