@@ -112,7 +112,7 @@ def load_keys():
 
 # BROADCASTING ROUTES
 
-@app.route('/transaction', methods=['POST'])
+@app.route('/broadcast-transaction', methods=['POST'])
 def broadcast_transaction():
     values = request.get_json()
     if not values:
