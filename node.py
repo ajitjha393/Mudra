@@ -171,9 +171,9 @@ def broadcast_block():
         }) , 400
     
     block = values['block']
-    if block['index'] == blockchain.__chain[-1].index + 1:
+    if block['index'] == blockchain.get_chain()[-1].index + 1:
         blockchain.add_block(block)
-    elif block['index'] > blockchain.__chain[-1].index:
+    elif block['index'] > blockchain.get_chain()[-1].index:
         pass
     else:
         response = {
