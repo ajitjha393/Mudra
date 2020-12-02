@@ -186,7 +186,11 @@ def broadcast_block():
 
         
     elif block['index'] > blockchain.get_chain()[-1].index:
-        pass
+        response = {
+            'message': 'Blockchain seems to differ from local blockchain!'
+        }
+        return jsonify(response), 200
+
     else:
         response = {
             'message': 'Blockchain seems to be shorter/stale, Block not added!'
