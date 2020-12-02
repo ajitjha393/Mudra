@@ -239,6 +239,23 @@ class Blockchain:
         self.__chain.append(block)
         self.__open_transactions = []
         self.save_data()
+
+        converted_block = block.__dict__.copy()
+        converted_tx = [tx.__dict__ for tx in converted_block['transactions']]
+        converted_block['transactions'] = converted_tx
+
+        for node in self.__peer_nodes:
+            url = 'http://{}/broadcast-block'.format(node)
+            try:
+                response = requests.post(url,json={
+                    'block': converted_block
+                })
+                if response.status_code == 400 or response.status_code == 500:
+                    print('Block Declined, needs Resolving!')
+
+            except requests.exceptions.ConnectionError:
+                continue
+        
         return block
 
 
