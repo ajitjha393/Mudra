@@ -181,8 +181,11 @@ class Blockchain:
             :amount -> float | Transaction amount
 
         '''
-        if self.public_key == None:
-            return False
+        #--- We don't need public_key on node-2 for sending tx---#
+        
+        # if self.public_key == None:
+        #     return False
+        
 
         new_transaction = Transaction(sender, recipient, signature, amount)
         
