@@ -25,6 +25,8 @@ class Blockchain:
 
         self.__open_transactions = []
         self.__peer_nodes = set()
+        self.resolve_conflicts = False
+
         self.load_data()
 
     def get_chain(self):
@@ -255,6 +257,8 @@ class Blockchain:
                 })
                 if response.status_code == 400 or response.status_code == 500:
                     print('Block Declined, needs Resolving!')
+                if response.status_code == 409:
+                    self.resolve_conflicts = True    
 
             except requests.exceptions.ConnectionError:
                 continue
